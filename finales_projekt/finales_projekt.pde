@@ -12,8 +12,11 @@ boolean UpPressed = false;
 boolean DownPressed = false;
 
 int numBalls = 3;
-PVector[] balls;
-PVector[] ballSpeeds;
+int speedModifier = 4;
+float[] BallX;
+float[] BallY;
+float[] BallSpeedX;
+float[] BallSpeedY;
 
 int leftScore = 0;
 int rightScore = 0;
@@ -24,13 +27,13 @@ void setup() {
   rightPaddleX = width - 30 - paddleWidth;
   rightPaddleY = height / 2 - paddleHeight / 2;
   
-  balls = new PVector[numBalls];
-  ballSpeeds = new PVector[numBalls];
+  BallX = new float[numBalls];
+  BallY = new float[numBalls];;
+  BallSpeedX = new float[numBalls];;
+  BallSpeedY = new float[numBalls];;
   
   for (int i = 0; i < numBalls; i++) {
-    balls[i] = new PVector(width / 2, height / 2);
-    ballSpeeds[i] = PVector.random2D();
-    ballSpeeds[i].mult(4);
+    resetBall(i);
   }
 }
 
@@ -44,32 +47,33 @@ void draw() {
   
   // Draw and move balls
   for (int i = 0; i < numBalls; i++) {
-    ellipse(balls[i].x, balls[i].y, ballSize, ballSize);
-    balls[i].add(ballSpeeds[i]);
+    ellipse(BallX[i], BallY[i], ballSize, ballSize);
+    BallX[i] = BallX[i] + BallSpeedX[i];
+    BallY[i] = BallY[i] + BallSpeedY[i];
     
     // Ball collision with top and bottom
-    if (balls[i].y < 0 || balls[i].y > height) {
-      ballSpeeds[i].y *= -1;
+    if (BallY[i] < 0 + ballSize/2 || BallY[i] > height - ballSize/2) {
+      BallSpeedY[i] *= -1;
     }
     
     // Ball collision with paddles
-    if (balls[i].x - ballSize / 2 < leftPaddleX + paddleWidth && 
-        balls[i].y > leftPaddleY && balls[i].y < leftPaddleY + paddleHeight) {
-      ballSpeeds[i].x *= -1;
-      balls[i].x = leftPaddleX + paddleWidth + ballSize / 2;
+    if (BallX[i] - ballSize / 2 < leftPaddleX + paddleWidth && 
+        BallY[i] > leftPaddleY && BallY[i] < leftPaddleY + paddleHeight) {
+      BallSpeedX[i] *= -1;
+      BallX[i] = leftPaddleX + paddleWidth + ballSize / 2;
     }
     
-    if (balls[i].x + ballSize / 2 > rightPaddleX && 
-        balls[i].y > rightPaddleY && balls[i].y < rightPaddleY + paddleHeight) {
-      ballSpeeds[i].x *= -1;
-      balls[i].x = rightPaddleX - ballSize / 2;
+    if (BallX[i] + ballSize / 2 > rightPaddleX && 
+        BallY[i] > rightPaddleY && BallY[i] < rightPaddleY + paddleHeight) {
+      BallSpeedX[i] *= -1;
+      BallX[i] = rightPaddleX - ballSize / 2;
     }
     
     // Ball out of bounds
-    if (balls[i].x < 0) {
+    if (BallX[i] < 0) {
       rightScore++;
       resetBall(i);
-    } else if (balls[i].x > width) {
+    } else if (BallX[i] > width) {
       leftScore++;
       resetBall(i);
     }
@@ -103,9 +107,10 @@ void draw() {
 }
 
 void resetBall(int index) {
-  balls[index].set(width / 2, height / 2);
-  ballSpeeds[index] = PVector.random2D();
-  ballSpeeds[index].mult(4);
+    BallX[index] = width / 2;
+    BallY[index] =  height / 2;
+    BallSpeedX[index] = random(-1,1)  * speedModifier;
+    BallSpeedY[index] = random(-1,1)  * speedModifier;
 }
 
 void keyPressed() {
