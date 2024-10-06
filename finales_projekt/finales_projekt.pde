@@ -22,7 +22,7 @@ int leftScore = 0;
 int rightScore = 0;
 
 void setup() {
-  size(800, 400);
+  size(1080, 720);
   leftPaddleY = height / 2 - paddleHeight / 2;
   rightPaddleX = width - 30 - paddleWidth;
   rightPaddleY = height / 2 - paddleHeight / 2;
@@ -88,22 +88,27 @@ void draw() {
   
   // Update paddles based on key states
   if (WPressed) {
-    leftPaddleY -= 5;
+    if(leftPaddleY > 5) {
+      leftPaddleY -= 5;
+      println(leftPaddleY);
+    }
   }
   if (SPressed) {
-    leftPaddleY += 5;
+    if(leftPaddleY < height - (5+paddleHeight)) {
+      leftPaddleY += 5;
+      println(leftPaddleY);
+    }
   }
   if (UpPressed) {
-    rightPaddleY -= 5;
+    if(rightPaddleY > 5) {
+      rightPaddleY -= 5;
+    }
   }
   if (DownPressed) {
-    rightPaddleY += 5;
+    if(rightPaddleY < height - (5+paddleHeight)) {
+      rightPaddleY += 5;
+    }
   }
-  
-  
-  // Constrain paddles within screen
-  leftPaddleY = constrain(leftPaddleY, 0, height - paddleHeight);
-  rightPaddleY = constrain(rightPaddleY, 0, height - paddleHeight);
 }
 
 void resetBall(int index) {
