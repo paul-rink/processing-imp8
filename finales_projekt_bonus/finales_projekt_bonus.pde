@@ -11,12 +11,13 @@ boolean SPressed = false;
 boolean UpPressed = false;
 boolean DownPressed = false;
 
-int numBalls = 3;
+int numBalls = 5;
 int speedModifier = 4;
 float[] BallX;
 float[] BallY;
 float[] BallSpeedX;
 float[] BallSpeedY;
+float[] BallTyp;
 
 int leftScore = 0;
 int rightScore = 0;
@@ -28,9 +29,10 @@ void setup() {
   rightPaddleY = height / 2 - paddleHeight / 2;
   
   BallX = new float[numBalls];
-  BallY = new float[numBalls];;
-  BallSpeedX = new float[numBalls];;
-  BallSpeedY = new float[numBalls];;
+  BallY = new float[numBalls];
+  BallSpeedX = new float[numBalls];
+  BallSpeedY = new float[numBalls];
+  BallTyp = new float[numBalls];
   
   for (int i = 0; i < numBalls; i++) {
     resetBall(i);
@@ -47,6 +49,11 @@ void draw() {
   
   // Draw and move balls
   for (int i = 0; i < numBalls; i++) {
+    if(BallTyp[i] == 0) {
+      fill(255);
+    } else {
+      fill(255,0,0);
+    }
     ellipse(BallX[i], BallY[i], ballSize, ballSize);
     BallX[i] = BallX[i] + BallSpeedX[i];
     BallY[i] = BallY[i] + BallSpeedY[i];
@@ -59,14 +66,24 @@ void draw() {
     // Ball collision with paddles
     if (BallX[i] - ballSize / 2 < leftPaddleX + paddleWidth && 
         BallY[i] > leftPaddleY && BallY[i] < leftPaddleY + paddleHeight) {
-      BallSpeedX[i] *= -1;
-      BallX[i] = leftPaddleX + paddleWidth + ballSize / 2;
+          if(BallTyp[i] == 0) {
+            BallSpeedX[i] *= -1;
+            BallX[i] = leftPaddleX + paddleWidth + ballSize / 2;
+          } else {
+            resetBall(i);
+            leftScore -= 1;
+          }
     }
     
     if (BallX[i] + ballSize / 2 > rightPaddleX && 
         BallY[i] > rightPaddleY && BallY[i] < rightPaddleY + paddleHeight) {
-      BallSpeedX[i] *= -1;
-      BallX[i] = rightPaddleX - ballSize / 2;
+       if(BallTyp[i] == 0) {
+            BallSpeedX[i] *= -1;
+            BallX[i] = rightPaddleX - paddleWidth - ballSize / 2;
+          } else {
+            resetBall(i);
+            rightScore -= 1;
+          }
     }
     
     // Ball out of bounds
@@ -114,8 +131,19 @@ void draw() {
 void resetBall(int index) {
     BallX[index] = width / 2;
     BallY[index] =  height / 2;
-    BallSpeedX[index] = random(-1,1)  * speedModifier;
-    BallSpeedY[index] = random(-1,1)  * speedModifier;
+    float dir = random(0,360);
+    
+    while( !((dir >= 45 && dir <= 135) || (dir >= 225 && dir <= 315))) {
+      dir = random(0,360);
+    }
+    BallSpeedX[index] = sin(radians(dir))  * speedModifier;
+    BallSpeedY[index] = cos(radians(dir))  * speedModifier; //Auf 1 Normierte Geschwindigkeit.
+    
+    if(random(0,1) > 0.8) {
+    BallTyp[index] = 1;
+    } else {
+      BallTyp[index] = 0;
+    }
 }
 
 void keyPressed() {
