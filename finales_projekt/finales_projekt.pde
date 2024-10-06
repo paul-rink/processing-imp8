@@ -6,6 +6,10 @@ int leftPaddleX = 30;
 int rightPaddleX;
 int leftPaddleY;
 int rightPaddleY;
+boolean WPressed = false;
+boolean SPressed = false;
+boolean UpPressed = false;
+boolean DownPressed = false;
 
 int numBalls = 3;
 PVector[] balls;
@@ -78,21 +82,20 @@ void draw() {
   text(leftScore, width / 4, 20);
   text(rightScore, 3 * width / 4, 20);
   
-  // Update paddles
-  if (keyPressed) {
-    // Left paddle controls
-    if (key == 'w' || key == 'W') {
-      leftPaddleY -= 5;
-    } else if (key == 's' || key == 'S') {
-      leftPaddleY += 5;
-    }
-    // Right paddle controls
-    if (keyCode == UP) {
-      rightPaddleY -= 5;
-    } else if (keyCode == DOWN) {
-      rightPaddleY += 5;
-    }
+  // Update paddles based on key states
+  if (WPressed) {
+    leftPaddleY -= 5;
   }
+  if (SPressed) {
+    leftPaddleY += 5;
+  }
+  if (UpPressed) {
+    rightPaddleY -= 5;
+  }
+  if (DownPressed) {
+    rightPaddleY += 5;
+  }
+  
   
   // Constrain paddles within screen
   leftPaddleY = constrain(leftPaddleY, 0, height - paddleHeight);
@@ -103,4 +106,34 @@ void resetBall(int index) {
   balls[index].set(width / 2, height / 2);
   ballSpeeds[index] = PVector.random2D();
   ballSpeeds[index].mult(4);
+}
+
+void keyPressed() {
+  //Left Paddle controls
+  if (key == 'w' || key == 'W') {
+      WPressed = true;
+    } else if (key == 's' || key == 'S') {
+      SPressed = true;
+    }
+    // Right paddle controls
+    if (keyCode == UP) {
+      UpPressed = true;
+    } else if (keyCode == DOWN) {
+      DownPressed = true;
+    }
+}
+
+void keyReleased() {
+  //Left Paddle controls
+  if (key == 'w' || key == 'W') {
+      WPressed = false;
+    } else if (key == 's' || key == 'S') {
+      SPressed = false;
+    }
+    // Right paddle controls
+    if (keyCode == UP) {
+      UpPressed = false;
+    } else if (keyCode == DOWN) {
+      DownPressed = false;
+    }
 }
