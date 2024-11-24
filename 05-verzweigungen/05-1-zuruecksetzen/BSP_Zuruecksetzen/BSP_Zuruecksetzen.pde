@@ -22,5 +22,12 @@ void draw() {
   if(ballX > 800) {
     ballX = width/2;
     ballY = height/2;
+    ballVx = ballVx * -1;
+    ballVy = ballVy * -1;
+  } else if(ballX < 0) {
+    ballX = width/2;
+    ballY = height/2;
+    ballVx = ballVx * -1;
+    ballVy = ballVy * -1;
   }
 }
