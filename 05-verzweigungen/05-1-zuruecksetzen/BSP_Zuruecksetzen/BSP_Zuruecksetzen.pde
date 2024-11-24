@@ -12,6 +12,10 @@ void setup() {
 }
 void draw() {
   background(0);
+  noFill();
+  stroke(255);
+  rect(1,1,width-2,height-2);
+  fill(255);
   circle(ballX, ballY, 50);
   ballX = ballX + ballVx;
   ballY = ballY + ballVy;
